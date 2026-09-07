@@ -1,124 +1,360 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Open Reward - Hall of Fame</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OpenCopiosis - Hall of Fame</title>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" />
     <style>
-        body { font-family: system-ui, -apple-system, sans-serif; margin: 0; padding: 0; background-color: #fcfcfc; color: #222; text-align: center; }
-        
-        .top-bar { position: fixed; top: 0; left: 0; right: 0; height: 60px; background: #ffffff; box-shadow: 0 2px 8px rgba(0,0,0,0.1); z-index: 1000; }
-        .top-bar-container { max-width: 1100px; width: 100%; height: 100%; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; position: relative; padding: 0 16px; box-sizing: border-box; }
-        
-        .brand-title { font-size: 20px; font-weight: bold; color: #222; text-decoration: none; line-height: 1; }
-        
-        .nav-item-dropdown-wrapper { position: relative; display: inline-block; }
-        .menu-btn { background: none; border: none; font-size: 28px; color: #000000; cursor: pointer; padding: 4px; line-height: 1; display: block; }
-        .dropdown-nav { display: none; flex-direction: column; gap: 12px; background: #ffffff; border: 1px solid #ccc; border-radius: 8px; padding: 16px; position: absolute; right: 0; top: 100%; margin-top: 8px; width: 220px; box-shadow: 0 4px 14px rgba(0,0,0,0.15); z-index: 1001; text-align: left; box-sizing: border-box; }
-        .dropdown-nav.open { display: flex; }
-        .dropdown-nav a { text-decoration: none; color: #000000; font-weight: 600; font-size: 16px; }
-        
-        .main-content { max-width: 600px; margin: 90px auto 0 auto; padding: 16px; transition: opacity 0.3s ease; }
-        .table-container { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 0 auto; }
-        table { width: 100%; border-collapse: collapse; min-width: 400px; background: #fff; margin: 0 auto; }
-        table, th, td { border: 1px solid #ccc; padding: 8px 12px; text-align: center; }
-        th { background: #f0f0f0; }
-
-        /* Loader Overlay */
-        #loader-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(255, 255, 255, 0.7); display: none;
-            justify-content: center; align-items: center; z-index: 9999;
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #fcfcfc;
+            color: #222;
+            text-align: center;
         }
+
+        .top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: #ffffff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+
+        .top-bar-container {
+            max-width: 1100px;
+            width: 100%;
+            height: 100%;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+            padding: 0 16px;
+            box-sizing: border-box;
+        }
+
+        .brand-title {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            padding: 2px 0;
+        }
+
+        .logo-img {
+            width: 43px;
+            height: 43px;
+            display: block;
+            margin: 4px 12px 4px 6px;
+            transition: transform 0.2s ease;
+        }
+
+        .brand-title:hover .logo-img {
+            transform: scale(1.08);
+        }
+
+        .nav-menu {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: #333;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 6px 12px;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.2s ease-in-out;
+            white-space: nowrap;
+        }
+
+            .nav-link:hover {
+                background-color: #e6e6e6;
+                border-color: #adadad;
+                color: #333;
+            }
+
+        /* Unified Menu Button Styling */
+        .menu-btn {
+            display: none;
+            background: #ffffff;
+            border: 1px solid #ccc;
+            font-size: 28px;
+            color: #555;
+            cursor: pointer;
+            padding: 4px 8px;
+            line-height: 1;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+
+            .menu-btn:hover {
+                background-color: #f2f2f2;
+            }
+
+            .menu-btn:active {
+                transform: scale(0.95);
+            }
+
+            /* The pressed-in state when the menu is open */
+            .menu-btn.pressed {
+                background-color: #e6e6e6;
+                border-color: #adadad;
+                box-shadow: inset 0 2px 5px rgba(0,0,0,0.15);
+                color: #222;
+            }
+
+        @media (max-width: 900px) {
+            .menu-btn {
+                display: block;
+            }
+
+            .nav-menu {
+                display: none;
+                flex-direction: column;
+                gap: 10px;
+                background: #fff;
+                border: 1px solid #ccc;
+                border-radius: 8px;
+                padding: 16px;
+                position: absolute;
+                right: 16px;
+                top: 100%;
+                margin-top: 8px;
+                width: 220px;
+                box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+                z-index: 1001;
+                text-align: left;
+                box-sizing: border-box;
+            }
+
+                .nav-menu.open {
+                    display: flex;
+                }
+
+            .nav-link {
+                border: none;
+                background: transparent;
+                padding: 4px 0;
+                font-size: 16px;
+                color: #000;
+            }
+
+                .nav-link:hover {
+                    background: transparent;
+                    color: #555;
+                }
+        }
+
+        .main-content {
+            max-width: 800px;
+            margin: 90px auto 0 auto;
+            padding: 16px;
+            transition: opacity 0.3s ease;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            margin: 0 auto;
+        }
+
+        /* Standardized DataTable Styles */
+        table.dataTable {
+            width: 100% !important;
+            margin-top: 16px !important;
+            background: #fff;
+            border-collapse: collapse;
+        }
+
+            table.dataTable thead th {
+                background: #f2f2f2;
+                border-bottom: 2px solid #ccc;
+            }
+
+            table.dataTable td, table.dataTable th {
+                border-bottom: 1px solid #eee;
+                padding: 8px 10px;
+                text-align: center;
+            }
+
+        .action-btn {
+            background-color: #e6e6e6;
+            border: 1px solid #adadad;
+            color: #333;
+            font-weight: 600;
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 12px;
+            margin-right: 4px;
+        }
+
+            .action-btn:hover {
+                background-color: #ccc;
+            }
+
+        #loader-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
         .spinner {
-            width: 48px; height: 48px; border: 5px solid #ccc;
-            border-top: 5px solid #000; border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            border: 5px solid #ccc;
+            border-top: 5px solid #000;
+            border-radius: 50%;
             animation: spin 0.8s linear infinite;
         }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
     </style>
 </head>
 <body>
 
-<div id="loader-overlay"><div class="spinner"></div></div>
+    <div id="loader-overlay"><div class="spinner"></div></div>
 
-<header class="top-bar">
-    <div class="top-bar-container">
-        <a href="index.html" class="brand-title">Open Reward</a>
-        <div class="nav-item-dropdown-wrapper">
-            <button class="menu-btn" onclick="toggleNav(event)" aria-label="Toggle menu">&#9776;</button>
-            <nav id="navMenu" class="dropdown-nav">
-                <a href="users.html">Show users</a>
-                <a href="products.html">Show products</a>
-                <a href="classes.html">Show classes</a>
-                <a href="transfers.html">Show transactions</a>
-                <a href="adduser.html">Add user</a>
-                <a href="product.html">Add product</a>
-                <a href="addclass.html">Add class</a>
-                <a href="transfer.html">Create transaction</a>
-            </nav>
+    <header class="top-bar">
+        <div class="top-bar-container">
+            <a href="index.html" class="brand-title" title="OpenCopiosis Home">
+                <img src="OpenCopiosis.jfif" alt="OpenCopiosis Logo" class="logo-img" />
+            </a>
+            <div class="nav-item-dropdown-wrapper">
+                <button class="menu-btn" onclick="toggleNav(event)" aria-label="Toggle menu">&#9776;</button>
+                <nav id="navMenu" class="nav-menu">
+                    <a href="users.html" class="nav-link">Show users</a>
+                    <a href="products.html" class="nav-link">Show items</a>
+                    <a href="classes.html" class="nav-link">Show classes</a>
+                    <a href="transfers.html" class="nav-link">Show transactions</a>
+                    <a href="adduser.html" class="nav-link">Add user</a>
+                    <a href="product.html" class="nav-link">Add product</a>
+                    <a href="addclass.html" class="nav-link">Add class</a>
+                    <a href="transfer.html" class="nav-link">Create transaction</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-content">
+        <div style="text-align: left; margin-bottom: 12px;">
+            <button class="action-btn" style="font-size: 14px; padding: 6px 12px; margin-right: 0;" onclick="showLoading(); window.location.href='users.html'">&#8592; Back to User List</button>
+        </div>
+        <h3 style="margin: 0 0 16px 0; text-align: center;">Hall of Fame</h3>
+        <div class="table-container">
+            <table id="fameTable">
+                <thead>
+                    <tr>
+                        <th>Prestige</th>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>NBR</th>
+                        <th>Created</th>
+                    </tr>
+                </thead>
+                <tbody id="fame-tbody"></tbody>
+            </table>
         </div>
     </div>
-</header>
 
-<div class="main-content">
-    <div class="table-container">
-        <table>
-            <thead>
-                <tr><th colspan="5" style="font-size: 1.2em;">Hall of Fame</th></tr>
-                <tr>
-                    <th>Prestige</th>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>NBR</th>
-                    <th>Created</th>
-                </tr>
-            </thead>
-            <tbody id="fame-tbody"></tbody>
-        </table>
-    </div>
-</div>
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="store.js"></script>
+    <script>
+        function showLoading() {
+            document.getElementById('loader-overlay').style.display = 'flex';
+            document.querySelector('.main-content').style.opacity = '0.3';
+        }
 
-<script src="store.js"></script>
-<script>
-    function showLoading() {
-        document.getElementById('loader-overlay').style.display = 'flex';
-        document.querySelector('.main-content').style.opacity = '0.3';
-    }
+        document.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', function (e) {
+                if (this.href && !this.href.startsWith('javascript') && this.target !== '_blank') {
+                    showLoading();
+                }
+            });
+        });
 
-    document.querySelectorAll('a').forEach(link => {
-        link.addEventListener('click', function(e) {
-            if (this.href && !this.href.startsWith('javascript') && this.target !== '_blank') {
-                showLoading();
+        function toggleNav(e) {
+            if (e) e.stopPropagation();
+            const navMenu = document.getElementById('navMenu');
+            const menuBtn = document.querySelector('.menu-btn');
+
+            navMenu.classList.toggle('open');
+
+            if (navMenu.classList.contains('open')) {
+                menuBtn.classList.add('pressed');
+            } else {
+                menuBtn.classList.remove('pressed');
+            }
+        }
+
+        document.addEventListener('click', function (e) {
+            const wrapper = document.querySelector('.nav-item-dropdown-wrapper');
+            const navMenu = document.getElementById('navMenu');
+            const menuBtn = document.querySelector('.menu-btn');
+
+            if (wrapper && !wrapper.contains(e.target)) {
+                navMenu.classList.remove('open');
+                if (menuBtn) menuBtn.classList.remove('pressed');
             }
         });
-    });
 
-    function toggleNav(e) { 
-        if (e) e.stopPropagation();
-        document.getElementById('navMenu').classList.toggle('open'); 
-    }
+        $(document).ready(function () {
+            const users = DB.get('users').filter(u => u.id !== 0);
+            users.sort((a, b) => b.fame - a.fame);
 
-    document.addEventListener('click', function(e) {
-        const wrapper = document.querySelector('.nav-item-dropdown-wrapper');
-        const navMenu = document.getElementById('navMenu');
-        if (wrapper && !wrapper.contains(e.target)) {
-            navMenu.classList.remove('open');
-        }
-    });
+            const tbody = $('#fame-tbody');
+            tbody.empty();
 
-    const users = DB.get('users').filter(u => u.id !== 0);
-    users.sort((a, b) => b.fame - a.fame);
+            users.forEach(u => {
+                tbody.append(`
+                    <tr>
+                        <td style="font-weight: bold;">${u.fame}</td>
+                        <td>${u.id}</td>
+                        <td>${u.name}</td>
+                        <td>${u.nbr}</td>
+                        <td>${u.time_created}</td>
+                    </tr>
+                `);
+            });
 
-    document.getElementById('fame-tbody').innerHTML = users.map(u => `
-        <tr>
-            <td>${u.fame}</td>
-            <td>${u.id}</td>
-            <td>${u.name}</td>
-            <td>${u.nbr}</td>
-            <td>${u.time_created}</td>
-        </tr>
-    `).join('');
-</script>
+            if ($.fn.DataTable.isDataTable('#fameTable')) {
+                $('#fameTable').DataTable().destroy();
+            }
+            $('#fameTable').DataTable({
+                pageLength: 10,
+                searching: true,
+                ordering: true,
+                order: [[0, 'desc']], // Orders by Prestige descending automatically
+                stripeClasses: []
+            });
+        });
+    </script>
 </body>
 </html>
