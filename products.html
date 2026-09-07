@@ -1,295 +1,548 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Open Reward - Products</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OpenCopiosis - Products</title>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" />
     <style>
-        body { font-family: system-ui, -apple-system, sans-serif; margin: 0; padding: 0; background-color: #fcfcfc; color: #222; text-align: center; }
-        
-        .top-bar { position: fixed; top: 0; left: 0; right: 0; height: 60px; background: #ffffff; box-shadow: 0 2px 8px rgba(0,0,0,0.1); z-index: 1000; }
-        .top-bar-container { max-width: 1100px; width: 100%; height: 100%; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; position: relative; padding: 0 16px; box-sizing: border-box; }
-        
-        .brand-title { font-size: 20px; font-weight: bold; color: #222; text-decoration: none; line-height: 1; }
-        
-        .nav-item-dropdown-wrapper { position: relative; display: inline-block; }
-        .menu-btn { background: none; border: none; font-size: 28px; color: #000000; cursor: pointer; padding: 4px; line-height: 1; display: block; }
-        .dropdown-nav { display: none; flex-direction: column; gap: 12px; background: #ffffff; border: 1px solid #ccc; border-radius: 8px; padding: 16px; position: absolute; right: 0; top: 100%; margin-top: 8px; width: 220px; box-shadow: 0 4px 14px rgba(0,0,0,0.15); z-index: 1001; text-align: left; box-sizing: border-box; }
-        .dropdown-nav.open { display: flex; }
-        .dropdown-nav a { text-decoration: none; color: #000000; font-weight: 600; font-size: 16px; }
-        
-        .main-content { max-width: 900px; margin: 90px auto 0 auto; padding: 16px; transition: opacity 0.3s ease; }
-        .table-controls { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 12px; margin-bottom: 12px; }
-        .search-box input, select, button { padding: 6px 10px; font-size: 14px; border: 1px solid #ccc; border-radius: 4px; }
-        .table-container { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 0 auto 16px auto; }
-        table { width: 100%; border-collapse: collapse; min-width: 500px; background: #fff; margin: 0 auto; }
-        table, th, td { border: 1px solid #ccc; padding: 8px 12px; text-align: center; }
-        th { background: #f0f0f0; cursor: pointer; }
-        .table-pagination { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 8px; margin-top: 12px; }
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #fcfcfc;
+            color: #222;
+            text-align: center;
+        }
 
-        .op-actions { display: flex; flex-direction: column; gap: 4px; align-items: center; }
-        .op-actions button { width: 100%; max-width: 120px; }
+        .top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: #ffffff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+
+        .top-bar-container {
+            max-width: 1100px;
+            width: 100%;
+            height: 100%;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+            padding: 0 16px;
+            box-sizing: border-box;
+        }
+
+        .brand-title {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            padding: 2px 0;
+        }
+
+        .logo-img {
+            width: 43px;
+            height: 43px;
+            display: block;
+            margin: 4px 12px 4px 6px;
+            transition: transform 0.2s ease;
+        }
+
+        .brand-title:hover .logo-img {
+            transform: scale(1.08);
+        }
+
+        .nav-menu {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: #333;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 6px 12px;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.2s ease-in-out;
+            white-space: nowrap;
+        }
+
+            .nav-link:hover {
+                background-color: #e6e6e6;
+                border-color: #adadad;
+                color: #333;
+            }
+
+            .nav-link.active {
+                background-color: #e6e6e6;
+                border-color: #adadad;
+                color: #333;
+                box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+                font-weight: bold;
+            }
+
+        /* Unified Menu Button Styling */
+        .menu-btn {
+            display: none;
+            background: #ffffff;
+            border: 1px solid #ccc;
+            font-size: 28px;
+            color: #555;
+            cursor: pointer;
+            padding: 4px 8px;
+            line-height: 1;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+
+            .menu-btn:hover {
+                background-color: #f2f2f2;
+            }
+
+            .menu-btn:active {
+                transform: scale(0.95);
+            }
+
+            /* The pressed-in state when the menu is open */
+            .menu-btn.pressed {
+                background-color: #e6e6e6;
+                border-color: #adadad;
+                box-shadow: inset 0 2px 5px rgba(0,0,0,0.15);
+                color: #222;
+            }
+
+        @media (max-width: 900px) {
+            .menu-btn {
+                display: block;
+            }
+
+            .nav-menu {
+                display: none;
+                flex-direction: column;
+                gap: 10px;
+                background: #fff;
+                border: 1px solid #ccc;
+                border-radius: 8px;
+                padding: 16px;
+                position: absolute;
+                right: 16px;
+                top: 100%;
+                margin-top: 8px;
+                width: 220px;
+                box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+                z-index: 1001;
+                text-align: left;
+                box-sizing: border-box;
+            }
+
+                .nav-menu.open {
+                    display: flex;
+                }
+
+            .nav-link {
+                border: none;
+                background: transparent;
+                padding: 4px 0;
+                font-size: 16px;
+                color: #000;
+            }
+
+                .nav-link:hover {
+                    background: transparent;
+                    color: #555;
+                }
+
+                .nav-link.active {
+                    background: transparent;
+                    color: #000;
+                    font-weight: bold;
+                    text-decoration: none;
+                    box-shadow: none;
+                }
+        }
+
+        .main-content {
+            max-width: 1000px;
+            margin: 90px auto 0 auto;
+            padding: 16px;
+        }
+
+        /* Clean table styles matching users.html */
+        table.dataTable {
+            width: 100% !important;
+            margin-top: 16px !important;
+            background: #fff;
+            border-collapse: collapse;
+        }
+
+            table.dataTable thead th {
+                background: #f2f2f2;
+                border-bottom: 2px solid #ccc;
+            }
+
+            table.dataTable td, table.dataTable th {
+                border-bottom: 1px solid #eee;
+                padding: 8px 10px;
+            }
+
+        /* Row hover highlighting for both tables */
+        #productTable tbody tr, #userProductsTable tbody tr {
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+            #productTable tbody tr:hover, #userProductsTable tbody tr:hover {
+                background-color: #eaeaea !important;
+            }
+
+        .action-btn {
+            background-color: #e6e6e6;
+            border: 1px solid #adadad;
+            color: #333;
+            font-weight: 600;
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 12px;
+            margin-right: 4px;
+        }
+
+            .action-btn:hover {
+                background-color: #ccc;
+            }
 
         /* Loader Overlay */
         #loader-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(255, 255, 255, 0.7); display: none;
-            justify-content: center; align-items: center; z-index: 9999;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
         }
+
         .spinner {
-            width: 48px; height: 48px; border: 5px solid #ccc;
-            border-top: 5px solid #000; border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            border: 5px solid #ccc;
+            border-top: 5px solid #000;
+            border-radius: 50%;
             animation: spin 0.8s linear infinite;
         }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        footer {
+            margin-top: 40px;
+            padding: 20px;
+            font-size: 14px;
+            color: #666;
+            border-top: 1px solid #eee;
+        }
     </style>
 </head>
 <body>
 
-<div id="loader-overlay"><div class="spinner"></div></div>
+    <div id="loader-overlay"><div class="spinner"></div></div>
 
-<header class="top-bar">
-    <div class="top-bar-container">
-        <a href="index.html" class="brand-title">Open Reward</a>
-        <div class="nav-item-dropdown-wrapper">
-            <button class="menu-btn" onclick="toggleNav(event)" aria-label="Toggle menu">&#9776;</button>
-            <nav id="navMenu" class="dropdown-nav">
-                <a href="users.html">Show users</a>
-                <a href="products.html"><b>Show products</b></a>
-                <a href="classes.html">Show classes</a>
-                <a href="transfers.html">Show transactions</a>
-                <a href="adduser.html">Add user</a>
-                <a href="product.html">Add product</a>
-                <a href="addclass.html">Add class</a>
-                <a href="transfer.html">Create transaction</a>
-            </nav>
+    <header class="top-bar">
+        <div class="top-bar-container">
+            <a href="index.html" class="brand-title" title="OpenCopiosis Home">
+                <img src="OpenCopiosis.jfif" alt="OpenCopiosis Logo" class="logo-img" />
+            </a>
+            <div class="nav-item-dropdown-wrapper">
+                <button class="menu-btn" onclick="toggleNav(event)" aria-label="Toggle menu">&#9776;</button>
+                <nav id="navMenu" class="nav-menu">
+                    <a href="users.html" class="nav-link">Show users</a>
+                    <a href="products.html" class="nav-link active">Show items</a>
+                    <a href="classes.html" class="nav-link">Show classes</a>
+                    <a href="transfers.html" class="nav-link">Show transactions</a>
+                    <a href="adduser.html" class="nav-link">Add user</a>
+                    <a href="product.html" class="nav-link">Add product</a>
+                    <a href="addclass.html" class="nav-link">Add class</a>
+                    <a href="transfer.html" class="nav-link">Create transaction</a>
+                </nav>
+            </div>
         </div>
-    </div>
-</header>
+    </header>
 
-<div class="main-content">
-    <h3 id="table-heading">Showing all products</h3>
-
-    <div class="table-controls">
-        <div class="table-info">
-            <label for="entries">Show</label>
-            <select id="entries" onchange="updateTable()">
-                <option value="10">10</option>
-                <option value="25" selected>25</option>
-                <option value="50">50</option>
-                <option value="100">100</option>
-            </select>
-            <span>entries</span>
+    <!-- Main Products Table View -->
+    <div class="main-content" id="productsView" style="display: none;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 16px;">
+            <h3 style="margin: 0;">Item Library</h3>
+            <button class="action-btn" onclick="window.location.href='product.html'" style="padding: 10px 16px; font-size: 14px; margin-right: 0;">+ Create New Item</button>
         </div>
-        <div class="search-box">
-            <input type="text" id="search" placeholder="Search..." onkeyup="searchTable()">
-        </div>
-    </div>
-
-    <div class="table-container">
-        <table id="product-table">
+        <table id="productTable">
             <thead>
-            <tr id="table-header-row"></tr>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Producers</th>
+                    <th>Consumers</th>
+                    <th>Created</th>
+                    <th>Operation</th>
+                </tr>
             </thead>
-            <tbody id="product-tbody"></tbody>
+            <tbody></tbody>
         </table>
     </div>
 
-    <div class="table-pagination">
-        <span id="table-info"></span>
-        <button onclick="prevPage()">Previous</button>
-        <span id="page-numbers"></span>
-        <button onclick="nextPage()">Next</button>
+    <!-- Producers Sub-View -->
+    <div class="main-content" id="producersView" style="display: none;">
+        <div style="text-align: left; margin-bottom: 12px;">
+            <button id="backBtn" class="action-btn" style="font-size: 14px; padding: 6px 12px; margin-right: 0;" onclick="showLoading(); window.location.href='products.html'">&#8592; Back to Item List</button>
+        </div>
+        <h3 id="producersTitle" style="margin: 0 0 16px 0; text-align: center;">Producers</h3>
+        <table id="userProductsTable">
+            <thead>
+                <tr>
+                    <th>User</th>
+                    <th>Product</th>
+                    <th>Gateway</th>
+                    <th>Benefit</th>
+                    <th>Created</th>
+                    <th>Operation</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
     </div>
-</div>
 
-<script src="store.js"></script>
-<script>
-    function showLoading() {
-        document.getElementById('loader-overlay').style.display = 'flex';
-        document.querySelector('.main-content').style.opacity = '0.3';
-    }
+    <footer>
+        &copy; <span id="currentYear"></span> OpenCopiosis
+    </footer>
 
-    document.querySelectorAll('a').forEach(link => {
-        link.addEventListener('click', function(e) {
-            if (this.href && !this.href.startsWith('javascript') && this.target !== '_blank') {
-                showLoading();
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="store.js"></script>
+    <script>
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+        function showLoading() {
+            document.getElementById('loader-overlay').style.display = 'flex';
+            document.querySelector('.main-content').style.opacity = '0.3';
+        }
+
+        function toggleNav(e) {
+            if (e) e.stopPropagation();
+            const navMenu = document.getElementById('navMenu');
+            const menuBtn = document.querySelector('.menu-btn');
+
+            navMenu.classList.toggle('open');
+
+            if (navMenu.classList.contains('open')) {
+                menuBtn.classList.add('pressed');
+            } else {
+                menuBtn.classList.remove('pressed');
+            }
+        }
+
+        document.addEventListener('click', function (e) {
+            const wrapper = document.querySelector('.nav-item-dropdown-wrapper');
+            const navMenu = document.getElementById('navMenu');
+            const menuBtn = document.querySelector('.menu-btn');
+
+            if (wrapper && !wrapper.contains(e.target)) {
+                navMenu.classList.remove('open');
+                if (menuBtn) menuBtn.classList.remove('pressed');
             }
         });
-    });
 
-    function toggleNav(e) { 
-        if (e) e.stopPropagation();
-        document.getElementById('navMenu').classList.toggle('open'); 
-    }
+        function renderProductTable() {
+            const products = DB.get('products') || [];
+            const transfers = DB.get('transfers') || [];
+            const tbody = $('#productTable tbody');
+            tbody.empty();
 
-    document.addEventListener('click', function(e) {
-        const wrapper = document.querySelector('.nav-item-dropdown-wrapper');
-        const navMenu = document.getElementById('navMenu');
-        if (wrapper && !wrapper.contains(e.target)) {
-            navMenu.classList.remove('open');
+            products.forEach(p => {
+                // Filter the transfers array to grab only transactions involving this specific product
+                const productTransfers = transfers.filter(t => t.ProductID === p.id);
+
+                // Use Set() to find unique Producer and Consumer IDs for this product
+                const uniqueProducersCount = new Set(productTransfers.map(t => t.ProducerID)).size;
+                const uniqueBeneficiariesCount = new Set(productTransfers.map(t => t.ConsumerID)).size;
+
+                const ops = `
+                    <button class="action-btn" onclick="event.stopPropagation(); showLoading(); window.location.href='products.html?producers_of=${p.id}';">Producers</button>
+                    <button class="action-btn" onclick="event.stopPropagation(); editProduct(${p.id})">Edit name</button>
+                    <button class="action-btn" onclick="event.stopPropagation(); deleteProduct(${p.id})">Delete</button>
+                `;
+                tbody.append(`
+                    <tr onclick="window.location.href='products.html?producers_of=${p.id}'" title="View Producers">
+                        <td>${p.id}</td>
+                        <td>${p.name}</td>
+                        <td>${uniqueProducersCount}</td>
+                        <td>${uniqueBeneficiariesCount}</td>
+                        <td>${p.time_created || 'N/A'}</td>
+                        <td>${ops}</td>
+                    </tr>
+                `);
+            });
+
+            if ($.fn.DataTable.isDataTable('#productTable')) {
+                $('#productTable').DataTable().destroy();
+            }
+            $('#productTable').DataTable({
+                pageLength: 10,
+                searching: true,
+                ordering: true,
+                stripeClasses: []
+            });
         }
-    });
 
-    let currentPage = 1;
-    let entriesPerPage = 25;
-    let sortDirection = true;
+        function renderUserProductsTable(productId, userId) {
+            const products = DB.get('products') || [];
+            const userProducts = DB.get('user_products') || [];
+            const users = DB.get('users') || [];
 
-    const urlParams = new URLSearchParams(window.location.search);
-    const productIdFilter = urlParams.get('producers_of');
+            let filteredUP = [];
 
-    function renderTable() {
-        const products = DB.get('products');
-        const userProducts = DB.get('user_products');
-        const users = DB.get('users');
-        const tbody = document.getElementById("product-tbody");
-        const headerRow = document.getElementById("table-header-row");
+            if (productId) {
+                const currentProd = products.find(p => p.id === productId);
+                const prodName = currentProd ? currentProd.name : 'Unknown';
+                $('#producersTitle').text(`Producers of Item #${productId} (${prodName})`);
+                filteredUP = userProducts.filter(up => up.ProductID === productId);
+            } else if (userId) {
+                const currentUser = users.find(u => u.id === userId);
+                const userName = currentUser ? currentUser.name : 'Unknown';
+                $('#producersTitle').text(`Assigned Products for User #${userId} (${userName})`);
+                filteredUP = userProducts.filter(up => up.UserID === userId);
 
-        if (productIdFilter) {
-            const currentProd = products.find(p => p.id === parseInt(productIdFilter));
-            const prodName = currentProd ? currentProd.name : 'Unknown';
+                // Switch the back button so it returns to the users list instead of products list
+                $('#backBtn').attr('onclick', "showLoading(); window.location.href='users.html'");
+                $('#backBtn').html("&#8592; Back to User List");
+            }
 
-            document.getElementById("table-heading").innerText = `Producers of Product #${productIdFilter} (${prodName})`;
-            headerRow.innerHTML = `
-                <th onclick="sortTable(0)">ID <span class="sort-arrow" id="sort-arrow-0">▲▼</span></th>
-                <th onclick="sortTable(1)">Name <span class="sort-arrow" id="sort-arrow-1">▲▼</span></th>
-                <th onclick="sortTable(2)">Gateway <span class="sort-arrow" id="sort-arrow-2">▲▼</span></th>
-                <th onclick="sortTable(3)">Benefit <span class="sort-arrow" id="sort-arrow-3">▲▼</span></th>
-                <th onclick="sortTable(4)">Created <span class="sort-arrow" id="sort-arrow-4">▲▼</span></th>
-                <th>Operation</th>
-            `;
+            const tbody = $('#userProductsTable tbody');
+            tbody.empty();
 
-            const filteredUP = userProducts.filter(up => up.ProductID === parseInt(productIdFilter));
-            tbody.innerHTML = filteredUP.map(up => {
-                const u = users.find(usr => usr.id === up.UserID) || { name: 'Unknown' };
-                return `<tr>
-                    <td>${u.id}</td>
-                    <td>${u.name}</td>
-                    <td>${up.gateway}</td>
-                    <td>${up.benefit}</td>
-                    <td>${up.time_created}</td>
-                    <td>
-                        <div class="op-actions">
-                            <button onclick="editProductForUser(${up.UserID}, ${up.ProductID})">Edit Product</button>
-                            <button onclick="editProducerValues(${up.UserID}, ${up.ProductID})">Edit Values</button>
-                            <button onclick="deleteProducerAssignment(${up.UserID}, ${up.ProductID})">Delete</button>
-                        </div>
-                    </td>
-                </tr>`;
-            }).join('');
-        } else {
-            headerRow.innerHTML = `
-                <th onclick="sortTable(0)">ID <span class="sort-arrow" id="sort-arrow-0">▲▼</span></th>
-                <th onclick="sortTable(1)">Name <span class="sort-arrow" id="sort-arrow-1">▲▼</span></th>
-                <th onclick="sortTable(2)">Created <span class="sort-arrow" id="sort-arrow-2">▲▼</span></th>
-                <th>Operation</th>
-            `;
-            tbody.innerHTML = products.map(p => `<tr>
-                <td>${p.id}</td>
-                <td>${p.name}</td>
-                <td>${p.time_created}</td>
-                <td>
-                    <div class="op-actions">
-                        <button onclick="showLoading(); window.location.href='products.html?producers_of=${p.id}';">Producers</button>
-                        <button onclick="editProduct(${p.id})">Edit name</button>
-                        <button onclick="deleteProduct(${p.id})">Delete</button>
-                    </div>
-                </td>
-            </tr>`).join('');
+            filteredUP.forEach(up => {
+                const u = users.find(usr => usr.id === up.UserID) || { name: 'Unknown', id: up.UserID };
+                const p = products.find(prd => prd.id === up.ProductID) || { name: 'Unknown', id: up.ProductID };
+                const ops = `
+                    <button class="action-btn" onclick="event.stopPropagation(); editProductForUser(${up.UserID}, ${up.ProductID})">Edit Product</button>
+                    <button class="action-btn" onclick="event.stopPropagation(); deleteProducerAssignment(${up.UserID}, ${up.ProductID})">Delete</button>
+                `;
+                tbody.append(`
+                    <tr onclick="window.location.href='edituserproduct.html?user_id=${up.UserID}&product_id=${up.ProductID}'" title="Edit User Product Details">
+                        <td>${u.name} (#${u.id})</td>
+                        <td>${p.name} (#${p.id})</td>
+                        <td>${up.gateway || 0}</td>
+                        <td>${up.benefit || 0}</td>
+                        <td>${up.time_created || 'N/A'}</td>
+                        <td>${ops}</td>
+                    </tr>
+                `);
+            });
+
+            if ($.fn.DataTable.isDataTable('#userProductsTable')) {
+                $('#userProductsTable').DataTable().destroy();
+            }
+            $('#userProductsTable').DataTable({
+                pageLength: 10,
+                searching: true,
+                ordering: true,
+                stripeClasses: []
+            });
         }
-        displayTable();
-    }
 
-    function editProduct(productId) {
-        let products = DB.get('products');
-        const prod = products.find(p => p.id === productId);
-        if (!prod) return;
+        function editProduct(productId) {
+            let products = DB.get('products') || [];
+            const prod = products.find(p => p.id === productId);
+            if (!prod) return;
 
-        const newName = prompt("Enter new product name:", prod.name);
-        if (newName === null) return;
-        const trimmed = newName.trim();
-        if (!trimmed) return alert("Product name cannot be empty.");
+            const newName = prompt("Enter new product name:", prod.name);
+            if (newName === null) return;
+            const trimmed = newName.trim();
+            if (!trimmed) {
+                alert("Product name cannot be empty.");
+                return;
+            }
 
-        const exists = products.some(p => p.id !== productId && p.name.toLowerCase() === trimmed.toLowerCase());
-        if (exists) return alert("A product with this name already exists.");
+            const exists = products.some(p => p.id !== productId && p.name.toLowerCase() === trimmed.toLowerCase());
+            if (exists) {
+                alert("A product with this name already exists.");
+                return;
+            }
 
-        prod.name = trimmed;
-        DB.set('products', products);
-        renderTable();
-    }
+            prod.name = trimmed;
+            DB.set('products', products);
+            window.location.reload();
+        }
 
-    function editProductForUser(userId, productId) {
-        showLoading();
-        window.location.href = `edituserproduct.html?user_id=${userId}&product_id=${productId}`;
-    }
+        function editProductForUser(userId, productId) {
+            showLoading();
+            window.location.href = `edituserproduct.html?user_id=${userId}&product_id=${productId}`;
+        }
 
-    function editProducerValues(userId, productId) {
-        showLoading();
-        window.location.href = `adduserproduct.html?user_id=${userId}&product_id=${productId}`;
-    }
+        function deleteProduct(productId) {
+            if (!confirm("Are you sure you want to delete this product?")) return;
 
-    function deleteProduct(productId) {
-        if (!confirm("Are you sure you want to delete this product?")) return;
+            let products = DB.get('products') || [];
+            let userProducts = DB.get('user_products') || [];
 
-        let products = DB.get('products');
-        let userProducts = DB.get('user_products');
+            products = products.filter(p => p.id !== productId);
+            userProducts = userProducts.filter(up => up.ProductID !== productId);
 
-        products = products.filter(p => p.id !== productId);
-        userProducts = userProducts.filter(up => up.ProductID !== productId);
+            DB.set('products', products);
+            DB.set('user_products', userProducts);
+            alert('Product deleted successfully!');
+            window.location.reload();
+        }
 
-        DB.set('products', products);
-        DB.set('user_products', userProducts);
-        alert('Product deleted successfully!');
-        renderTable();
-    }
+        function deleteProducerAssignment(userId, productId) {
+            if (!confirm("Are you sure you want to remove this producer and their assigned values for this product?")) return;
 
-    function deleteProducerAssignment(userId, productId) {
-        if (!confirm("Are you sure you want to remove this producer and their assigned values for this product?")) return;
+            let userProducts = DB.get('user_products') || [];
+            userProducts = userProducts.filter(up => !(up.UserID === userId && up.ProductID === productId));
 
-        let userProducts = DB.get('user_products');
-        userProducts = userProducts.filter(up => !(up.UserID === userId && up.ProductID === productId));
+            DB.set('user_products', userProducts);
+            alert('Producer assignment removed successfully!');
+            window.location.reload();
+        }
 
-        DB.set('user_products', userProducts);
-        alert('Producer assignment removed successfully!');
-        renderTable();
-    }
+        $(document).ready(function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            const producersOf = urlParams.get('producers_of');
+            const userId = urlParams.get('user_id');
 
-    function updateTable() { entriesPerPage = parseInt(document.getElementById("entries").value); currentPage = 1; displayTable(); }
-    function searchTable() { currentPage = 1; displayTable(); }
-
-    function displayTable() {
-        const table = document.getElementById("product-table");
-        const rows = Array.from(table.querySelector("tbody").querySelectorAll("tr"));
-        const searchText = document.getElementById("search").value.toLowerCase();
-        const filteredRows = rows.filter(row => row.innerText.toLowerCase().includes(searchText));
-
-        const totalEntries = filteredRows.length;
-        const start = (currentPage - 1) * entriesPerPage;
-        const end = start + entriesPerPage;
-
-        rows.forEach(row => row.style.display = "none");
-        filteredRows.slice(start, end).forEach(row => row.style.display = "");
-
-        document.getElementById("table-info").innerText = `Showing ${Math.min(start + 1, totalEntries)} to ${Math.min(end, totalEntries)} of ${totalEntries} entries`;
-    }
-
-    function nextPage() { currentPage++; displayTable(); }
-    function prevPage() { currentPage = Math.max(1, currentPage - 1); displayTable(); }
-
-    function sortTable(n) {
-        const table = document.getElementById("product-table");
-        let rows = Array.from(table.querySelector("tbody").rows);
-        rows.sort((a, b) => {
-            let x = a.cells[n].innerText.toLowerCase();
-            let y = b.cells[n].innerText.toLowerCase();
-            return sortDirection ? x.localeCompare(y) : y.localeCompare(x);
+            if (producersOf) {
+                $('#productsView').hide();
+                $('#producersView').show();
+                renderUserProductsTable(parseInt(producersOf), null);
+            } else if (userId) {
+                $('#productsView').hide();
+                $('#producersView').show();
+                renderUserProductsTable(null, parseInt(userId));
+            } else {
+                $('#producersView').hide();
+                $('#productsView').show();
+                renderProductTable();
+            }
         });
-        sortDirection = !sortDirection;
-        rows.forEach(row => table.querySelector("tbody").appendChild(row));
-        displayTable();
-    }
-
-    renderTable();
-</script>
+    </script>
 </body>
 </html>
