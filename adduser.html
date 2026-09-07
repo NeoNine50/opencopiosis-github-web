@@ -3,131 +3,362 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Open Reward - Add User</title>
+    <title>OpenCopiosis - Add User</title>
     <style>
-        body { font-family: system-ui, -apple-system, sans-serif; margin: 0; padding: 0; background-color: #fcfcfc; color: #222; text-align: center; }
-        
-        .top-bar { position: fixed; top: 0; left: 0; right: 0; height: 60px; background: #ffffff; box-shadow: 0 2px 8px rgba(0,0,0,0.1); z-index: 1000; }
-        .top-bar-container { max-width: 1100px; width: 100%; height: 100%; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; position: relative; padding: 0 16px; box-sizing: border-box; }
-        
-        .brand-title { font-size: 20px; font-weight: bold; color: #222; text-decoration: none; line-height: 1; }
-        
-        .nav-item-dropdown-wrapper { position: relative; display: inline-block; }
-        .menu-btn { background: none; border: none; font-size: 28px; color: #000000; cursor: pointer; padding: 4px; line-height: 1; display: block; }
-        .dropdown-nav { display: none; flex-direction: column; gap: 12px; background: #ffffff; border: 1px solid #ccc; border-radius: 8px; padding: 16px; position: absolute; right: 0; top: 100%; margin-top: 8px; width: 220px; box-shadow: 0 4px 14px rgba(0,0,0,0.15); z-index: 1001; text-align: left; box-sizing: border-box; }
-        .dropdown-nav.open { display: flex; }
-        .dropdown-nav a { text-decoration: none; color: #000000; font-weight: 600; font-size: 16px; }
-        
-        .main-content { max-width: 600px; margin: 90px auto 0 auto; padding: 16px; transition: opacity 0.3s ease; }
-        .form-group { margin: 20px auto; display: flex; flex-direction: column; gap: 6px; max-width: 400px; align-items: center; }
-        input[type="text"], button, input[type="submit"] { padding: 8px 12px; font-size: 14px; border: 1px solid #ccc; border-radius: 4px; width: 100%; box-sizing: border-box; }
-
-        /* Loader Overlay */
-        #loader-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(255, 255, 255, 0.7); display: none;
-            justify-content: center; align-items: center; z-index: 9999;
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #fcfcfc;
+            color: #222;
+            text-align: center;
         }
+
+        .top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: #ffffff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+
+        .top-bar-container {
+            max-width: 1100px;
+            width: 100%;
+            height: 100%;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+            padding: 0 16px;
+            box-sizing: border-box;
+        }
+
+        .brand-title {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            padding: 2px 0;
+        }
+
+        .logo-img {
+            width: 43px;
+            height: 43px;
+            display: block;
+            margin: 4px 12px 4px 6px;
+            transition: transform 0.2s ease;
+        }
+
+        .brand-title:hover .logo-img {
+            transform: scale(1.08);
+        }
+
+        .nav-menu {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: #333;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 6px 12px;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.2s ease-in-out;
+            white-space: nowrap;
+        }
+
+            .nav-link:hover {
+                background-color: #e6e6e6;
+                border-color: #adadad;
+                color: #333;
+            }
+
+            .nav-link.active {
+                background-color: #e6e6e6;
+                border-color: #adadad;
+                color: #333;
+                box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+                font-weight: bold;
+            }
+
+        /* Unified Menu Button Styling */
+        .menu-btn {
+            display: none;
+            background: #ffffff;
+            border: 1px solid #ccc;
+            font-size: 28px;
+            color: #555;
+            cursor: pointer;
+            padding: 4px 8px;
+            line-height: 1;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+
+            .menu-btn:hover {
+                background-color: #f2f2f2;
+            }
+
+            .menu-btn:active {
+                transform: scale(0.95);
+            }
+
+            /* The pressed-in state when the menu is open */
+            .menu-btn.pressed {
+                background-color: #e6e6e6;
+                border-color: #adadad;
+                box-shadow: inset 0 2px 5px rgba(0,0,0,0.15);
+                color: #222;
+            }
+
+        @media (max-width: 900px) {
+            .menu-btn {
+                display: block;
+            }
+
+            .nav-menu {
+                display: none;
+                flex-direction: column;
+                gap: 10px;
+                background: #fff;
+                border: 1px solid #ccc;
+                border-radius: 8px;
+                padding: 16px;
+                position: absolute;
+                right: 16px;
+                top: 100%;
+                margin-top: 8px;
+                width: 220px;
+                box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+                z-index: 1001;
+                text-align: left;
+                box-sizing: border-box;
+            }
+
+                .nav-menu.open {
+                    display: flex;
+                }
+
+            .nav-link {
+                border: none;
+                background: transparent;
+                padding: 4px 0;
+                font-size: 16px;
+                color: #000;
+            }
+
+                .nav-link:hover {
+                    background: transparent;
+                    color: #555;
+                }
+
+                .nav-link.active {
+                    background: transparent;
+                    color: #000;
+                    font-weight: bold;
+                    text-decoration: none;
+                    box-shadow: none;
+                }
+        }
+
+        .main-content {
+            max-width: 600px;
+            margin: 90px auto 0 auto;
+            padding: 24px;
+            background: #ffffff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            box-sizing: border-box;
+            transition: opacity 0.3s ease;
+        }
+
+        .form-group {
+            margin: 20px auto;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            max-width: 400px;
+            align-items: flex-start;
+            text-align: left;
+        }
+
+        input[type="text"] {
+            padding: 8px 12px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .submit-btn {
+            background-color: #e6e6e6;
+            border: 1px solid #adadad;
+            color: #333;
+            font-weight: 600;
+            padding: 10px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 14px;
+            width: 100%;
+            box-sizing: border-box;
+            transition: background-color 0.2s ease;
+        }
+
+            .submit-btn:hover {
+                background-color: #ccc;
+            }
+
+        #loader-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
         .spinner {
-            width: 48px; height: 48px; border: 5px solid #ccc;
-            border-top: 5px solid #000; border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            border: 5px solid #ccc;
+            border-top: 5px solid #000;
+            border-radius: 50%;
             animation: spin 0.8s linear infinite;
         }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
     </style>
 </head>
 <body>
 
-<div id="loader-overlay"><div class="spinner"></div></div>
+    <div id="loader-overlay"><div class="spinner"></div></div>
 
-<header class="top-bar">
-    <div class="top-bar-container">
-        <a href="index.html" class="brand-title">Open Reward</a>
-        <div class="nav-item-dropdown-wrapper">
-            <button class="menu-btn" onclick="toggleNav(event)" aria-label="Toggle menu">&#9776;</button>
-            <nav id="navMenu" class="dropdown-nav">
-                <a href="users.html">Show users</a>
-                <a href="products.html">Show products</a>
-                <a href="classes.html">Show classes</a>
-                <a href="transfers.html">Show transactions</a>
-                <a href="adduser.html"><b>Add user</b></a>
-                <a href="product.html">Add product</a>
-                <a href="addclass.html">Add class</a>
-                <a href="transfer.html">Create transaction</a>
-            </nav>
+    <header class="top-bar">
+        <div class="top-bar-container">
+            <a href="index.html" class="brand-title" title="OpenCopiosis Home">
+                <img src="OpenCopiosis.jfif" alt="OpenCopiosis Logo" class="logo-img" />
+            </a>
+            <div class="nav-item-dropdown-wrapper">
+                <button class="menu-btn" onclick="toggleNav(event)" aria-label="Toggle menu">&#9776;</button>
+                <nav id="navMenu" class="nav-menu">
+                    <a href="users.html" class="nav-link">Show users</a>
+                    <a href="products.html" class="nav-link">Show items</a>
+                    <a href="classes.html" class="nav-link">Show classes</a>
+                    <a href="transfers.html" class="nav-link">Show transactions</a>
+                    <a href="adduser.html" class="nav-link active">Add user</a>
+                    <a href="product.html" class="nav-link">Add product</a>
+                    <a href="addclass.html" class="nav-link">Add class</a>
+                    <a href="transfer.html" class="nav-link">Create transaction</a>
+                </nav>
+            </div>
         </div>
+    </header>
+
+    <div class="main-content">
+        <h3 style="margin-top: 0; text-align: center;">Add New User</h3>
+
+        <form id="addUserForm">
+            <div class="form-group">
+                <label for="name"><b>User Name:</b></label>
+                <input type="text" name="name" id="name" required autofocus placeholder="Enter user name..." />
+            </div>
+            <div style="max-width: 400px; margin: 0 auto;">
+                <input type="submit" value="Submit" class="submit-btn" />
+            </div>
+        </form>
     </div>
-</header>
 
-<div class="main-content">
-    <h3>Register new user</h3>
-    
-    <form id="addUserForm">
-        <div class="form-group">
-            <label for="name"><b>User Name:</b></label>
-            <input type="text" name="name" id="name" required autofocus placeholder="Enter user name..."/>
-        </div>
-        <div style="max-width: 400px; margin: 0 auto;">
-            <input type="submit" value="Submit" style="cursor: pointer; font-weight: bold;"/>
-        </div>
-    </form>
-</div>
+    <script src="store.js"></script>
+    <script>
+        function showLoading() {
+            document.getElementById('loader-overlay').style.display = 'flex';
+            document.querySelector('.main-content').style.opacity = '0.3';
+        }
 
-<script src="store.js"></script>
-<script>
-    function showLoading() {
-        document.getElementById('loader-overlay').style.display = 'flex';
-        document.querySelector('.main-content').style.opacity = '0.3';
-    }
+        document.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', function (e) {
+                if (this.href && !this.href.startsWith('javascript') && this.target !== '_blank') {
+                    showLoading();
+                }
+            });
+        });
 
-    document.querySelectorAll('a').forEach(link => {
-        link.addEventListener('click', function(e) {
-            if (this.href && !this.href.startsWith('javascript') && this.target !== '_blank') {
-                showLoading();
+        function toggleNav(e) {
+            if (e) e.stopPropagation();
+            const navMenu = document.getElementById('navMenu');
+            const menuBtn = document.querySelector('.menu-btn');
+
+            navMenu.classList.toggle('open');
+
+            if (navMenu.classList.contains('open')) {
+                menuBtn.classList.add('pressed');
+            } else {
+                menuBtn.classList.remove('pressed');
+            }
+        }
+
+        document.addEventListener('click', function (e) {
+            const wrapper = document.querySelector('.nav-item-dropdown-wrapper');
+            const navMenu = document.getElementById('navMenu');
+            const menuBtn = document.querySelector('.menu-btn');
+
+            if (wrapper && !wrapper.contains(e.target)) {
+                navMenu.classList.remove('open');
+                if (menuBtn) menuBtn.classList.remove('pressed');
             }
         });
-    });
 
-    function toggleNav(e) { 
-        if (e) e.stopPropagation();
-        document.getElementById('navMenu').classList.toggle('open'); 
-    }
+        document.getElementById('addUserForm').onsubmit = function (e) {
+            e.preventDefault();
+            const users = DB.get('users');
+            const nameInput = document.getElementById('name').value.trim();
 
-    document.addEventListener('click', function(e) {
-        const wrapper = document.querySelector('.nav-item-dropdown-wrapper');
-        const navMenu = document.getElementById('navMenu');
-        if (wrapper && !wrapper.contains(e.target)) {
-            navMenu.classList.remove('open');
+            const exists = users.some(u => u.name.toLowerCase() === nameInput.toLowerCase());
+            if (exists) {
+                alert("A user with this name already exists.");
+                return;
+            }
+
+            const maxId = users.reduce((max, u) => (u.id > max ? u.id : max), 0);
+            const newId = maxId + 1;
+
+            users.push({
+                id: newId,
+                name: nameInput,
+                nbr: 0,
+                fame: 0,
+                time_created: new Date().toLocaleString()
+            });
+
+            DB.set('users', users);
+            alert('User registered successfully!');
+            showLoading();
+            window.location.href = 'users.html';
         }
-    });
-
-    document.getElementById('addUserForm').onsubmit = function(e) {
-        e.preventDefault();
-        const users = DB.get('users');
-        const nameInput = document.getElementById('name').value.trim();
-
-        const exists = users.some(u => u.name.toLowerCase() === nameInput.toLowerCase());
-        if (exists) {
-            alert("A user with this name already exists.");
-            return;
-        }
-
-        const maxId = users.reduce((max, u) => (u.id > max ? u.id : max), 0);
-        const newId = maxId + 1;
-
-        users.push({
-            id: newId,
-            name: nameInput,
-            nbr: 0,
-            fame: 0,
-            time_created: new Date().toLocaleString()
-        });
-
-        DB.set('users', users);
-        alert('User registered successfully!');
-        showLoading();
-        window.location.href = 'users.html';
-    }
-</script>
+    </script>
 </body>
 </html>
