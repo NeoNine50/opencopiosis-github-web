@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>OpenCopiosis - Add Product</title>
+    <title>OpenCopiosis - Add Item</title>
     <style>
         body {
             font-family: system-ui, -apple-system, sans-serif;
@@ -297,7 +297,7 @@
                     <a href="classes.html" class="nav-link">Show classes</a>
                     <a href="transfers.html" class="nav-link">Show transactions</a>
                     <a href="adduser.html" class="nav-link">Add user</a>
-                    <a href="product.html" class="nav-link active">Add product</a>
+                    <a href="product.html" class="nav-link active">Add item</a>
                     <a href="addclass.html" class="nav-link">Add class</a>
                     <a href="transfer.html" class="nav-link">Create transaction</a>
                 </nav>
@@ -353,10 +353,11 @@
     </div>
 
     <footer>
-    &copy; <span id="currentYear"></span> OpenCopiosis
+        &copy; <span id="currentYear"></span> OpenCopiosis
     </footer>
-    
+
     <script src="store.js"></script>
+    <script src="nbr.js"></script>
     <script>
         function showLoading() {
             document.getElementById('loader-overlay').style.display = 'flex';
@@ -494,8 +495,7 @@
             const humanben = selectedClass.humanben ?? 0;
 
             // Calculate Benefit
-            const rawBenefit = resabundance * Math.log(1.0 + (beneficiaries / producers)) * ((ccs * conssubben) + (cco * consobjben) + (ceb * envben) + (chb * humanben));
-            const benefitVal = Math.max(0, Math.ceil(rawBenefit));
+            const benefitVal = CopiosisNBR.calculateNBR({ resabundance, beneficiaries, producers, ccs, conssubben, cco, consobjben, ceb, envben, chb, humanben });
 
             // Create User Product Mapping
             userProducts.push({
